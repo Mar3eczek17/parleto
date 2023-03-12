@@ -144,7 +144,6 @@ def task_3(data_in):
                     result[period_data["period"]] = 0
                 result[period_data['period']] += period_data['documents']['incomes'] + period_data['documents'][
                     'expenses']
-    # no_of_days = len(result)
 
     return sum(result.values()) // len(result)
 
