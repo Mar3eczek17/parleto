@@ -87,21 +87,19 @@ def task_1(data_in):
             '2020-05': 24
         }
     '''
-    return {}
-    # cut_created_list = []
-    # [cut_created_list.append(dic_value['created'][:7]) for dic_value in data_in]
-    #
-    # dict_of_periods = {}
-    # for term in cut_created_list:
-    #     if term in dict_of_periods:
-    #         dict_of_periods[term] += 1
-    #     else:
-    #         dict_of_periods[term] = 1
-    #
-    # # return dict_of_periods
+    cut_created_list = []
+    [cut_created_list.append(dic_value['created'][:7]) for dic_value in data_in]
+
+    dict_of_periods = {}
+    for term in cut_created_list:
+        if term in dict_of_periods:
+            dict_of_periods[term] += 1
+        else:
+            dict_of_periods[term] = 1
+
+    return dict_of_periods
 
 
-#     (od 9 do 16 w sumie 9.0h, dnia: 07-03-2023)
 @pomiar
 def task_2(data_in):
     '''
@@ -127,13 +125,8 @@ def task_2(data_in):
             result[period_data["period"]]["incomes"] += period_data["documents"]["incomes"]
             result[period_data["period"]]["expenses"] += period_data["documents"]["expenses"]
 
-    result = {key: {**value, "total": value["incomes"] + value["expenses"]} for key, value in result.items()}
-    return result
+    return {key: {**value, "total": value["incomes"] + value["expenses"]} for key, value in result.items()}
 
-
-#     (od 16:30 do 23:30 w sumie 7.0h, dnia: 07-03-2023)
-#     (od 7:30 do 14:30 w sumie 7.0h, dnia: 08-03-2023)
-#     w sumie 14.0h
 
 @pomiar
 def task_3(data_in):
@@ -145,30 +138,15 @@ def task_3(data_in):
     '''
     result = {}
     for record in data_in:
-        if record['package'] == 'FLEXIBLE' or record['package'] == 'ENTERPRISE':
+        if record['package'] in ['FLEXIBLE', 'ENTERPRISE']:
             for period_data in record["summary"]:
                 if period_data["period"] not in result:
-                    result[period_data["period"]] = {"incomes": 0, "expenses": 0, "total": 0}
-                result[period_data["period"]]["incomes"] += period_data["documents"]["incomes"]
-                result[period_data["period"]]["expenses"] += period_data["documents"]["expenses"]
-                result[period_data["period"]]["total"] += period_data["documents"]["expenses"] + \
-                                                          period_data["documents"]["incomes"]
+                    result[period_data["period"]] = 0
+                result[period_data['period']] += period_data['documents']['incomes'] + period_data['documents'][
+                    'expenses']
+    # no_of_days = len(result)
 
-    total = []
-    for key, value in result.items():
-        total.append(sum(value.values()))
-    total = sum(total)
-
-    periods = [x for x in list(sorted(list(result)))[-3:]]
-
-    result_days = 0
-    for record in data_in:
-        if record['package'] == 'FLEXIBLE' or record['package'] == 'ENTERPRISE':
-            for period in record['summary']:
-                if period['period'] in periods:
-                    result_days += 1
-
-    return total // result_days
+    return sum(result.values()) // len(result)
 
 
 if __name__ == '__main__':
@@ -189,5 +167,3 @@ Example:
         for func in [task_1, task_2, task_3]:
             print(f'\n>>> {func.__name__.upper()}')
             print(json.dumps(func(data_in), ensure_ascii=False, indent=2))
-
-#     (od 12:30 do : w sumie 7.0h, dnia: 09-03-2023)
